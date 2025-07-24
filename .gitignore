@@ -1,30 +1,105 @@
+# Dependencies
 /vendor/
 node_modules/
 npm-debug.log
 yarn-error.log
+yarn.lock
+package-lock.json
+
+# Laravel specific
+/laravel-app/vendor/
+/laravel-app/node_modules/
+/laravel-app/public/hot
+/laravel-app/public/storage
+/laravel-app/storage/*.key
+/laravel-app/.env
+/laravel-app/.env.backup
+/laravel-app/.env.production
+/laravel-app/.phpunit.result.cache
+/laravel-app/Homestead.json
+/laravel-app/Homestead.yaml
+/laravel-app/auth.json
+/laravel-app/.phpactor.json
 
 # Laravel 4 specific
-bootstrap/compiled.php
-app/storage/
+/laravel-app/bootstrap/compiled.php
+/laravel-app/app/storage/
 
 # Laravel 5 & Lumen specific
-public/storage
-public/hot
+/laravel-app/public/storage
+/laravel-app/public/hot
 
 # Laravel 5 & Lumen specific with changed public path
-public_html/storage
-public_html/hot
+/laravel-app/public_html/storage
+/laravel-app/public_html/hot
 
-storage/*.key
-.env
-Homestead.yaml
-Homestead.json
+# Storage and cache
+/laravel-app/storage/logs/*
+/laravel-app/storage/framework/cache/*
+/laravel-app/storage/framework/sessions/*
+/laravel-app/storage/framework/views/*
+/laravel-app/bootstrap/cache/*
+!/laravel-app/storage/logs/.gitkeep
+!/laravel-app/storage/framework/cache/.gitkeep
+!/laravel-app/storage/framework/sessions/.gitkeep
+!/laravel-app/storage/framework/views/.gitkeep
+!/laravel-app/bootstrap/cache/.gitkeep
+
+# Build artifacts
+/laravel-app/public/build
+/laravel-app/public/mix-manifest.json
+/laravel-app/storage/pail
+
+# Testing
+/laravel-app/tests/coverage
+/laravel-app/.phpunit.result.cache
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.buildpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+.env.local
+.env.production.local
+
+# Logs
+*.log
+/laravel-app/storage/logs/*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# Backup files
+*.sql
+*.backup
+*.bak
+
+# Security
+*.pem
+*.key
+*.crt
+
+# Local development
 /.vagrant
-.phpunit.result.cache
-
-/public/build
-/storage/pail
-.env.backup
-.env.production
-.phpactor.json
-auth.json
+/Homestead.yaml
+/Homestead.json
