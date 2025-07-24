@@ -1,0 +1,64 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Laravel
+laravel-app/node_modules
+laravel-app/vendor
+laravel-app/storage/logs/*
+laravel-app/storage/framework/cache/*
+laravel-app/storage/framework/sessions/*
+laravel-app/storage/framework/views/*
+laravel-app/bootstrap/cache/*
+laravel-app/.env
+laravel-app/.env.backup
+laravel-app/.env.production
+laravel-app/.phpunit.result.cache
+laravel-app/public/hot
+laravel-app/public/storage
+laravel-app/storage/*.key
+
+# NPM
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Testing
+laravel-app/tests/coverage
+laravel-app/phpunit.xml
+laravel-app/.phpunit.result.cache
+
+# Build artifacts
+laravel-app/public/build
+laravel-app/public/mix-manifest.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Docker
+docker-compose.override.yml
+Dockerfile.dev
+
+# Backup files
+*.sql
+*.backup

@@ -1,0 +1,83 @@
+# Base image for Laravel with PHP 8.2, Nginx, and essential tools
+FROM alpine:3.19 AS base
+
+# Set environment variables
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_DISABLE_XDEBUG_WARN=1 \
+    COMPOSER_MEMORY_LIMIT=-1 \
+    TZ=UTC \
+    PHP_INI_DIR=/etc/php82 \
+    PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2" \
+    PHP_CPPFLAGS="$PHP_CFLAGS" \
+    PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
+
+# Install system dependencies and PHP extensions
+RUN apk update && apk add --no-cache \
+    # Core system packages
+    bash curl wget unzip git tzdata ca-certificates \
+    # Nginx
+    nginx \
+    # MySQL client
+    mysql-client \
+    # PHP 8.2 and extensions
+    php82 php82-fpm php82-cli \
+    # Core PHP extensions
+    php82-mbstring php82-xml php82-opcache php82-pdo php82-pdo_mysql php82-pdo_sqlite \
+    php82-tokenizer php82-json php82-curl php82-phar php82-dom php82-mysqli \
+    php82-session php82-ctype php82-fileinfo php82-simplexml php82-xmlwriter \
+    php82-iconv php82-zip php82-gd php82-intl php82-bcmath \
+    # Additional useful extensions
+    php82-redis php82-pcntl php82-posix php82-sockets \
+    # Security and monitoring
+    supervisor openrc \
+    && rm -rf /var/cache/apk/*
+
+# Create symbolic links for PHP
+RUN ln -sf /usr/bin/php82 /usr/bin/php \
+    && ln -sf /etc/php82 /etc/php \
+    && ln -sf /usr/sbin/php-fpm82 /usr/bin/php-fpm
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+    && chmod +x /usr/bin/composer
+
+# Create www-data user and group
+RUN addgroup -g 82 -S www-data \
+    && adduser -u 82 -D -S -G www-data www-data
+
+# Create necessary directories
+RUN mkdir -p /var/www/html /var/log/nginx /var/log/php82 /run/nginx \
+    && chown -R www-data:www-data /var/www/html \
+    && chown -R www-data:www-data /var/log/nginx \
+    && chown -R www-data:www-data /var/log/php82
+
+# Copy configuration files
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/php/php.ini /etc/php82/php.ini
+COPY docker/php/php-fpm.conf /etc/php82/php-fpm.conf
+COPY docker/php/www.conf /etc/php82/php-fpm.d/www.conf
+COPY scripts/start.sh /start.sh
+
+# Set proper permissions
+RUN chmod +x /start.sh \
+    && chown root:root /start.sh
+
+# Configure PHP-FPM to run as www-data
+RUN sed -i 's/user = nobody/user = www-data/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/group = nobody/group = www-data/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/listen.owner = nobody/listen.owner = www-data/g' /etc/php82/php-fpm.d/www.conf \
+    && sed -i 's/listen.group = nobody/listen.group = www-data/g' /etc/php82/php-fpm.d/www.conf
+
+# Configure Nginx to run as www-data
+RUN sed -i 's/user nginx;/user www-data;/g' /etc/nginx/nginx.conf
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+# Default command
+CMD ["/start.sh"]
